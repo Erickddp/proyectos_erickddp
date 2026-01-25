@@ -116,8 +116,8 @@ export const appsRegistry: AppEntry[] = [
             open: 'https://drive.google.com/file/d/17H7a9TwP9DWh6dlgweFWqukx5I2hdZZN/view?usp=sharing',
         },
         preview: {
-            image: '/images/templates-preview.png', // Placeholder
-            alt: 'Templates Gallery Preview',
+            image: '/images/pd3.png',
+            alt: 'Plataformas Digitales (ISR & IVA)',
         },
         quickStart: [
             'Search for a template',
