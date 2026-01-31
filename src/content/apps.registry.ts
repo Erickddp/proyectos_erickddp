@@ -3,6 +3,8 @@ export type AppStatus = 'live' | 'soon' | 'docs';
 export interface AppLink {
     open?: string;
     docs?: string;
+    download?: string;
+    repo?: string;
 }
 
 export interface AppPreview {
@@ -79,6 +81,37 @@ export const appsRegistry: AppEntry[] = [
         ],
     },
     {
+        slug: 'analizador-cfdi',
+        title: 'Analizador CFDI',
+        subtitle: 'Análisis fiscal masivo de CFDI en segundos',
+        status: 'live',
+        shortDescription: 'Herramienta técnica para analizar CFDI de forma masiva, extraer datos clave, generar KPIs y exportar resultados listos para trabajo fiscal.',
+        description: 'El Analizador CFDI nace de la necesidad real de revisar grandes volúmenes de XML fiscales sin depender de portales lentos o procesos manuales. Está desarrollado en Python, empaquetado como aplicación de escritorio y acompañado de una demo web para su distribución. Permite análisis masivo, clasificación, generación de KPIs y exportación estructurada para trabajo contable y fiscal.',
+        tags: ['CFDI', 'Fiscal', 'Python', 'Contabilidad', 'Automatización'],
+        links: {
+            open: 'https://axml.erickddp.com',
+            download: 'https://axml.erickddp.com/assets/downloads/AnalizadorCFDI.zip',
+            repo: 'https://github.com/Erickddp/analizador-cfdi-python',
+        },
+        preview: {
+            image: '/images/xmlview.png', // puedes agregarla después
+            alt: 'Analizador CFDI Demo',
+        },
+        quickStart: [
+            'Descarga la versión demo',
+            'Ejecuta la aplicación de escritorio',
+            'Carga tus CFDI en XML',
+            'Obtén KPIs y exportaciones automáticamente',
+        ],
+        features: [
+            'Análisis masivo de CFDI XML',
+            'Extracción automática de datos fiscales',
+            'Generación de KPIs contables',
+            'Exportación a Excel',
+            'Aplicación de escritorio portable',
+        ],
+    },
+    {
         slug: 'conthabil',
         title: 'ContHabil',
         subtitle: 'Una app para toda la contabilidad RESICO',
@@ -132,4 +165,11 @@ export const appsRegistry: AppEntry[] = [
             'NDA Forms',
         ],
     },
+
+
+
+
+
+
+
 ];

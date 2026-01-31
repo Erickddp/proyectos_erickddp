@@ -49,9 +49,16 @@ export function ParticlesBackground() {
         const draw = () => {
             ctx.clearRect(0, 0, width, height);
 
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
             // Update and draw points
-            ctx.fillStyle = 'rgba(100, 255, 218, 0.4)'; // Cyan-ish
-            ctx.strokeStyle = 'rgba(100, 255, 218, 0.15)';
+            if (isDark) {
+                ctx.fillStyle = 'rgba(100, 255, 218, 0.4)'; // Cyan-ish (Original)
+                ctx.strokeStyle = 'rgba(100, 255, 218, 0.15)';
+            } else {
+                ctx.fillStyle = 'rgba(8, 145, 178, 0.3)'; // Cyan 600 (Darker for Light Mode)
+                ctx.strokeStyle = 'rgba(8, 145, 178, 0.15)';
+            }
 
             for (let i = 0; i < points.length; i++) {
                 const p = points[i];
@@ -75,7 +82,11 @@ export function ParticlesBackground() {
 
                     if (dist < 150) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(100, 255, 218, ${0.15 * (1 - dist / 150)})`;
+                        if (isDark) {
+                            ctx.strokeStyle = `rgba(100, 255, 218, ${0.15 * (1 - dist / 150)})`;
+                        } else {
+                            ctx.strokeStyle = `rgba(8, 145, 178, ${0.15 * (1 - dist / 150)})`;
+                        }
                         ctx.lineWidth = 1;
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
@@ -101,7 +112,7 @@ export function ParticlesBackground() {
         <canvas
             ref={canvasRef}
             className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-500"
-            style={{ background: 'transparent', opacity: 'var(--nodes-opacity)' }}
+            style={{ background: 'transparent' }}
         />
     );
 }

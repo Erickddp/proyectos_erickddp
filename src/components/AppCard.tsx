@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ExternalLink, ArrowRight, Lock } from 'lucide-react';
+import { ExternalLink, ArrowRight, Lock, Github, Download } from 'lucide-react';
 import { AppEntry } from '@/content/apps.registry';
 import { StatusBadge } from './StatusBadge';
 import { cn } from '@/lib/utils';
@@ -62,32 +62,104 @@ export function AppCard({ app }: AppCardProps) {
 
                 {/* Actions */}
                 <div className="mt-auto pt-4 border-t border-[var(--border)]">
-                    {hasOpenLink ? (
-                        app.links.open?.startsWith('/') ? (
-                            <Link
-                                href={app.links.open}
-                                className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-fg)] text-xs font-bold transition-all shadow-md hover:shadow-lg"
-                            >
-                                Abrir <ArrowRight size={14} />
-                            </Link>
-                        ) : (
-                            <a
-                                href={app.links.open}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-fg)] text-xs font-bold transition-all shadow-md hover:shadow-lg"
-                            >
-                                Abrir <ExternalLink size={14} />
-                            </a>
-                        )
-                    ) : (
-                        <button
-                            disabled
-                            className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--muted)]/10 text-[var(--muted)] border border-[var(--border)] text-xs font-semibold cursor-not-allowed"
-                        >
-                            Próximamente <Lock size={14} />
-                        </button>
-                    )}
+
+                    {(() => {
+                        // 1. Determine Actions
+                        const { open, download, repo } = app.links;
+
+                        // Priority: Download -> Open -> Repo
+                        let primaryAction: { type: 'download' | 'open' | 'repo', url: string } | null = null;
+                        if (download) primaryAction = { type: 'download', url: download };
+                        else if (open) primaryAction = { type: 'open', url: open };
+                        else if (repo) primaryAction = { type: 'repo', url: repo };
+
+                        // Secondary: All others
+                        const secondaryActions: { type: 'download' | 'open' | 'repo', url: string }[] = [];
+                        if (download && primaryAction?.type !== 'download') secondaryActions.push({ type: 'download', url: download });
+                        if (open && primaryAction?.type !== 'open') secondaryActions.push({ type: 'open', url: open });
+                        if (repo && primaryAction?.type !== 'repo') secondaryActions.push({ type: 'repo', url: repo });
+
+                        // 2. Render Functions
+                        const renderPrimary = (action: typeof primaryAction) => {
+                            if (!action) return null;
+                            const isDownload = action.type === 'download';
+                            const isExternal = action.type === 'repo' || (action.type === 'open' && !action.url.startsWith('/'));
+                            const validUrl = action.url || '#';
+
+                            const commonClasses = "flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-fg)] text-xs font-bold transition-all shadow-md hover:shadow-lg";
+
+                            let label = 'Abrir';
+                            let Icon = ArrowRight;
+
+                            if (action.type === 'download') { label = 'Descargar'; Icon = Download; }
+                            else if (action.type === 'repo') { label = 'Repo'; Icon = Github; }
+                            else if (isExternal) { Icon = ExternalLink; }
+
+                            if (!isExternal && !isDownload) {
+                                return (
+                                    <Link href={validUrl} className={commonClasses}>
+                                        {label} <Icon size={14} />
+                                    </Link>
+                                );
+                            }
+                            return (
+                                <a href={validUrl} target="_blank" rel="noopener noreferrer" className={commonClasses}>
+                                    {label} <Icon size={14} />
+                                </a>
+                            );
+                        };
+
+                        const renderSecondary = (action: typeof secondaryActions[0]) => {
+                            const isDownload = action.type === 'download';
+                            const isExternal = action.type === 'repo' || (action.type === 'open' && !action.url.startsWith('/'));
+                            const validUrl = action.url || '#';
+
+                            let label = 'Abrir';
+                            let Icon = ArrowRight;
+
+                            if (action.type === 'download') { label = 'Descargar'; Icon = Download; }
+                            else if (action.type === 'repo') { label = 'Repo'; Icon = Github; }
+                            else if (isExternal) { Icon = ExternalLink; }
+
+                            const commonClasses = "flex items-center gap-1.5 text-[var(--muted)] hover:text-[var(--accent)] text-[11px] font-medium transition-colors px-1 py-0.5";
+
+                            if (!isExternal && !isDownload) {
+                                return (
+                                    <Link key={action.type} href={validUrl} className={commonClasses}>
+                                        <Icon size={12} /> {label}
+                                    </Link>
+                                );
+                            }
+                            return (
+                                <a key={action.type} href={validUrl} target="_blank" rel="noopener noreferrer" className={commonClasses}>
+                                    <Icon size={12} /> {label}
+                                </a>
+                            );
+                        };
+
+                        // 3. Render Logic
+                        if (!primaryAction) {
+                            return (
+                                <button
+                                    disabled
+                                    className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--muted)]/10 text-[var(--muted)] border border-[var(--border)] text-xs font-semibold cursor-not-allowed"
+                                >
+                                    Próximamente <Lock size={14} />
+                                </button>
+                            );
+                        }
+
+                        return (
+                            <div className="flex flex-col gap-3">
+                                {renderPrimary(primaryAction)}
+                                {secondaryActions.length > 0 && (
+                                    <div className="flex flex-wrap items-center justify-center gap-3 border-t border-[var(--border)]/40 pt-2 mt-1">
+                                        {secondaryActions.map(action => renderSecondary(action))}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })()}
                 </div>
             </div>
         </motion.div>
