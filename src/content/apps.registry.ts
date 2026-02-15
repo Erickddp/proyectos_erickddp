@@ -124,6 +124,8 @@ export const appsRegistry: AppEntry[] = [
         tags: ['App Web', 'CFDI', 'SQL', 'FastAPI', 'Next.js', 'Fiscal'],
         links: {
             open: 'https://sql.erickddp.com',
+            repo: 'https://github.com/Erickddp/cfdi-sql-lab',
+            docs: 'https://nsl-reconocimientos.blogspot.com/2026/02/laboratorio-web-de-analisis-fiscal-con.html',
         },
         preview: {
             image: '/images/sql.png', // Placeholder
