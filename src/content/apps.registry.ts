@@ -111,6 +111,39 @@ export const appsRegistry: AppEntry[] = [
             'Aplicación de escritorio portable',
         ],
     },
+
+    {
+        slug: 'cfdi-sql-lab',
+        title: 'CFDI SQL LAB',
+        subtitle: 'Laboratorio web de análisis fiscal con SQL + dashboards + API',
+        status: 'live',
+        shortDescription:
+            'Explora, consulta y analiza grandes volúmenes de CFDI con consultas tipo SQL, métricas agregadas y una API REST documentada.',
+        description:
+            'CFDI SQL LAB es una app full-stack para análisis fiscal real: frontend en Next.js, backend en FastAPI y base SQL. Incluye Dashboard de métricas, SQL Playground con ejecución controlada, Data Browser e endpoints de análisis (health, seed, comprobantes, dashboard, playground). Arquitectura desacoplada lista para escalar (SQLite dev / PostgreSQL prod).',
+        tags: ['App Web', 'CFDI', 'SQL', 'FastAPI', 'Next.js', 'Fiscal'],
+        links: {
+            open: 'https://sql.erickddp.com',
+        },
+        preview: {
+            image: '/images/sql.png', // Placeholder
+            alt: 'CFDI SQL LAB Preview',
+        },
+        quickStart: [
+            'Open the web app',
+            'Run SQL queries in the Playground',
+            'Review metrics in the Dashboard',
+        ],
+        features: [
+            'SQL Playground (controlled execution)',
+            'Fiscal Dashboard (aggregations & metrics)',
+            'Data Browser (tables exploration)',
+            'REST API + Swagger / OpenAPI',
+            'Multi-env deploy (local / production)',
+        ],
+    },
+
+
     {
         slug: 'conthabil',
         title: 'ContHabil',
