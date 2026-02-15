@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ExternalLink, ArrowRight, Lock, Github, Download } from 'lucide-react';
+import { ExternalLink, ArrowRight, Lock, Github, Download, BookOpen } from 'lucide-react';
 import { AppEntry } from '@/content/apps.registry';
 import { StatusBadge } from './StatusBadge';
 import { cn } from '@/lib/utils';
@@ -65,25 +65,28 @@ export function AppCard({ app }: AppCardProps) {
 
                     {(() => {
                         // 1. Determine Actions
-                        const { open, download, repo } = app.links;
+                        const { open, download, repo, docs } = app.links;
 
-                        // Priority: Download -> Open -> Repo
-                        let primaryAction: { type: 'download' | 'open' | 'repo', url: string } | null = null;
+                        // Priority: Download -> Open -> Repo -> Docs
+                        let primaryAction: { type: 'download' | 'open' | 'repo' | 'docs', url: string } | null = null;
                         if (download) primaryAction = { type: 'download', url: download };
                         else if (open) primaryAction = { type: 'open', url: open };
                         else if (repo) primaryAction = { type: 'repo', url: repo };
+                        else if (docs) primaryAction = { type: 'docs', url: docs };
 
                         // Secondary: All others
-                        const secondaryActions: { type: 'download' | 'open' | 'repo', url: string }[] = [];
+                        const secondaryActions: { type: 'download' | 'open' | 'repo' | 'docs', url: string }[] = [];
                         if (download && primaryAction?.type !== 'download') secondaryActions.push({ type: 'download', url: download });
                         if (open && primaryAction?.type !== 'open') secondaryActions.push({ type: 'open', url: open });
                         if (repo && primaryAction?.type !== 'repo') secondaryActions.push({ type: 'repo', url: repo });
+                        if (docs && primaryAction?.type !== 'docs') secondaryActions.push({ type: 'docs', url: docs });
 
                         // 2. Render Functions
                         const renderPrimary = (action: typeof primaryAction) => {
                             if (!action) return null;
                             const isDownload = action.type === 'download';
-                            const isExternal = action.type === 'repo' || (action.type === 'open' && !action.url.startsWith('/'));
+                            // Docs should always operate as external link
+                            const isExternal = action.type === 'repo' || action.type === 'docs' || (action.type === 'open' && !action.url.startsWith('/'));
                             const validUrl = action.url || '#';
 
                             const commonClasses = "flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent)]/90 text-[var(--accent-fg)] text-xs font-bold transition-all shadow-md hover:shadow-lg";
@@ -93,6 +96,7 @@ export function AppCard({ app }: AppCardProps) {
 
                             if (action.type === 'download') { label = 'Descargar'; Icon = Download; }
                             else if (action.type === 'repo') { label = 'Repo'; Icon = Github; }
+                            else if (action.type === 'docs') { label = 'Documentación'; Icon = BookOpen; }
                             else if (isExternal) { Icon = ExternalLink; }
 
                             if (!isExternal && !isDownload) {
@@ -111,7 +115,7 @@ export function AppCard({ app }: AppCardProps) {
 
                         const renderSecondary = (action: typeof secondaryActions[0]) => {
                             const isDownload = action.type === 'download';
-                            const isExternal = action.type === 'repo' || (action.type === 'open' && !action.url.startsWith('/'));
+                            const isExternal = action.type === 'repo' || action.type === 'docs' || (action.type === 'open' && !action.url.startsWith('/'));
                             const validUrl = action.url || '#';
 
                             let label = 'Abrir';
@@ -119,6 +123,7 @@ export function AppCard({ app }: AppCardProps) {
 
                             if (action.type === 'download') { label = 'Descargar'; Icon = Download; }
                             else if (action.type === 'repo') { label = 'Repo'; Icon = Github; }
+                            else if (action.type === 'docs') { label = 'Docs'; Icon = BookOpen; }
                             else if (isExternal) { Icon = ExternalLink; }
 
                             const commonClasses = "flex items-center gap-1.5 text-[var(--muted)] hover:text-[var(--accent)] text-[11px] font-medium transition-colors px-1 py-0.5";
